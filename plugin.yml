@@ -1,0 +1,4 @@
+name: AntiCheatPlugin
+version: 1.0.0
+main: myplugin.AntiCheatPlugin
+api-version: 1.21
