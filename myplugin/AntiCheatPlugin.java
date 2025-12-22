@@ -16,10 +16,10 @@ import java.util.UUID;
 
 public class AntiCheatPlugin extends JavaPlugin implements Listener {
 
-    // UUID → Zeitpunkt (Millis), bis wann Timeout gilt
+    
     private final HashMap<UUID, Long> timeouts = new HashMap<>();
 
-    // 5 Minuten
+   
     private static final long TIMEOUT_TIME = 5 * 60 * 1000;
 
     @Override
@@ -28,13 +28,13 @@ public class AntiCheatPlugin extends JavaPlugin implements Listener {
         getLogger().info("AntiCheatPlugin aktiviert");
     }
 
-    // 🧠 Chat-Überwachung
+    
     @EventHandler
     public void onChat(AsyncChatEvent event) {
         Player p = event.getPlayer();
         long now = System.currentTimeMillis();
 
-        // ⛔ Wenn Spieler getimeoutet ist
+        
         if (timeouts.containsKey(p.getUniqueId())) {
             long until = timeouts.get(p.getUniqueId());
             if (now < until) {
@@ -49,7 +49,7 @@ public class AntiCheatPlugin extends JavaPlugin implements Listener {
 
         String msg = event.message().toString().toLowerCase();
 
-        // 🔍 „KI“-Wörter (regelbasiert)
+        
         if (msg.contains("wurst") || msg.contains("hack") || msg.contains("fly")) {
             event.setCancelled(true);
             timeouts.put(p.getUniqueId(), now + TIMEOUT_TIME);
@@ -59,7 +59,7 @@ public class AntiCheatPlugin extends JavaPlugin implements Listener {
         }
     }
 
-    // 👮 Admin-Befehle
+    
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
@@ -94,3 +94,4 @@ public class AntiCheatPlugin extends JavaPlugin implements Listener {
         return false;
     }
 }
+
