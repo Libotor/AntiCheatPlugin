@@ -1,6 +1,7 @@
 package myplugin;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -9,11 +10,15 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class AntiCheatPlugin extends JavaPlugin implements Listener {
 
     private final Map<UUID, Long> rejoinTimeouts = new HashMap<>();
+
     private List<String> keywords;
     private long timeoutMillis;
     private String kickMessage;
@@ -23,7 +28,7 @@ public class AntiCheatPlugin extends JavaPlugin implements Listener {
         saveDefaultConfig();
 
         keywords = getConfig().getStringList("keywords");
-        timeoutMillis = getConfig().getLong("rejoin-timeout-seconds") * 1000;
+        timeoutMillis = getConfig().getLong("rejoin-timeout-seconds") * 1000L;
         kickMessage = getConfig().getString("kick-message");
 
         Bukkit.getPluginManager().registerEvents(this, this);
@@ -34,12 +39,15 @@ public class AntiCheatPlugin extends JavaPlugin implements Listener {
     public void onChat(AsyncChatEvent event) {
         Player p = event.getPlayer();
 
-        if (p.hasPermission("anticheat.bypass")) return;
+        if (p.hasPermission("anticheat.bypass")) {
+            return;
+        }
 
         String msg = event.message().toString().toLowerCase();
 
         for (String word : keywords) {
             if (msg.contains(word.toLowerCase())) {
+
                 event.setCancelled(true);
 
                 rejoinTimeouts.put(
@@ -49,9 +57,15 @@ public class AntiCheatPlugin extends JavaPlugin implements Listener {
 
                 p.kick(Component.text(kickMessage));
 
-                Bukkit.broadcast(
-                        Component.text("§c[AntiCheat] " + p.getName() + " was kicked.")
-                );
+        Component broadcastMsg = Component.text(
+             "§c[AntiCheat] " + p.getName() + " was kicked."
+    );
+
+      for (Player online : Bukkit.getOnlinePlayers()) {
+         ((Audience) online).sendMessage(broadcastMsg);
+     }
+
+
                 return;
             }
         }
@@ -61,7 +75,9 @@ public class AntiCheatPlugin extends JavaPlugin implements Listener {
     public void onLogin(PlayerLoginEvent event) {
         UUID uuid = event.getPlayer().getUniqueId();
 
-        if (!rejoinTimeouts.containsKey(uuid)) return;
+        if (!rejoinTimeouts.containsKey(uuid)) {
+            return;
+        }
 
         long until = rejoinTimeouts.get(uuid);
 
@@ -75,6 +91,5 @@ public class AntiCheatPlugin extends JavaPlugin implements Listener {
         }
     }
 }
-
 
 
