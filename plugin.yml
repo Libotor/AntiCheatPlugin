@@ -1,13 +1,9 @@
 name: AntiCheatPlugin
-version: 1.1.0
+version: 1.0
 main: myplugin.AntiCheatPlugin
 api-version: 1.21
 author: LibotorPro
-description: Simple chat-based anti-cheat with server timeout
-permissions:
-  anticheat.bypass:
-    default: op
-  anticheat.admin:
-    default: op
+description: Simple Paper AntiChat / Timeout AntiCheat
+
 
 
