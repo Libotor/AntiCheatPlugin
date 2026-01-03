@@ -1,9 +1,31 @@
 name: AntiCheatPlugin
-version: 1.1.0
+version: 1.2.0
 main: myplugin.AntiCheatPlugin
 api-version: 1.21
 author: LibotorPro
-description: Simple Paper AntiChat / Timeout AntiCheat
+description: Simple AntiCheat with escalating timeouts and admin commands.
+
+commands:
+  timeout:
+    description: Timeout a player for a specific time
+    usage: /timeout <player> <minutes> [reason]
+    permission: anticheat.admin
+
+  untimeout:
+    description: Remove a player's timeout
+    usage: /untimeout <player>
+    permission: anticheat.admin
+
+permissions:
+  anticheat.admin:
+    description: Allows using AntiCheat admin commands
+    default: op
+
+  anticheat.bypass:
+    description: Bypass AntiCheat checks
+    default: op
+
+
 
 
 
