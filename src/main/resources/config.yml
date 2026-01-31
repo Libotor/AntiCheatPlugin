@@ -1,0 +1,53 @@
+# ========================================
+# AntiCheatPlugin Configuration
+# Version 1.3.0 – Intelligence Update
+# ========================================
+
+# ⏱ Timeout System
+timeouts:
+  base-minutes: 5         
+  add-per-violation: 5     
+
+# 💬 Chat Keyword Detection
+chat-detection:
+  enabled: true
+  keywords:
+    - hack
+    - cheat
+    - xray
+    - killaura
+    - fly
+    - hacke
+    - fliege
+    - xraye
+    - cheate
+  bypass-permission: anticheat.bypass
+
+# ✈ Fly Hack Detection
+fly-detection:
+  enabled: true
+  max-air-time-seconds: 4   
+  ignore-creative: true
+  ignore-permission: anticheat.bypass
+
+# 💎 Diamond / X-Ray Detection
+diamond-detection:
+  enabled: true
+  max-diamonds-per-minute: 8   
+  alert-permission: anticheat.alert
+
+# 🚪 Join Check (Timeout Block)
+join-check:
+  enabled: true
+  kick-message: "&cYou are still timed out."
+
+# 🔔 Alert Message Format (für Admins)
+alerts:
+  prefix: "&8[&cAntiCheat&8] &r"
+
+
+
+
+
+
+
