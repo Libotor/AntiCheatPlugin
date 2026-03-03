@@ -1,0 +1,38 @@
+name: AntiCheatPlugin
+version: 1.4.0
+main: myplugin.AntiCheatPlugin
+author: LibotorPro
+api-version: 1.20
+
+commands:
+  timeout:
+    description: Timeouts a player
+    usage: /timeout <player> <minutes> [reason]
+    permission: anticheat.timeout
+
+  untimeout:
+    description: Removes a timeout
+    usage: /untimeout <player>
+    permission: anticheat.untimeout
+
+  acgui:
+    description: Opens the AntiCheat Admin GUI
+    usage: /acgui
+    permission: anticheat.admin
+
+permissions:
+  anticheat.timeout:
+    default: op
+  anticheat.untimeout:
+    default: op
+  anticheat.admin:
+    default: op
+  anticheat.alert:
+    description: Erhält Live Alerts vom AntiCheat
+    default: op
+  anticheat.bypass:
+    description: Bypass AntiCheat checks
+    default: op
+
+
+
