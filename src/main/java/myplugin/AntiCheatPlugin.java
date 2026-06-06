@@ -147,23 +147,43 @@ public class AntiCheatPlugin extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onBreak(BlockBreakEvent e) {
+        // Prüfen, ob ein Diamanterz abgebaut wurde
         if (e.getBlock().getType() != Material.DIAMOND_ORE &&
             e.getBlock().getType() != Material.DEEPSLATE_DIAMOND_ORE) return;
 
         Player p = e.getPlayer();
+
+        // 1. OP-ABFRAGE: Server-Owner und Admins komplett ignorieren
+        if (p.isOp()) return;
+
         UUID uuid = p.getUniqueId();
         long now = System.currentTimeMillis();
 
         diamondMines.putIfAbsent(uuid, new ArrayList<>());
         List<Long> list = diamondMines.get(uuid);
 
+        // Einträge entfernen, die älter als 60 Sekunden sind
         list.removeIf(t -> now - t > 60000);
         list.add(now);
 
-        if (list.size() >= 5) {
-            int points = addSuspicion(uuid, 3);
-            alert(p.getName() + " mined many diamonds quickly. " +
-                    "(Suspicion: " + points + "/15)");
+        // 2. NUR EINE EINZIGE WARNUNG: 
+        // Durch "==" wird der Alert exakt ein Mal pro Minute ausgelöst, wenn das Limit geknackt wird.
+        if (list.size() == 20) {
+            alert(p.getName() + " reached the diamond limit. (Mined: 20 blocks in < 60s)");
+        }
+    }
+
+    // ================= UTILS & ALERTS =================
+
+    public void alert(String message) {
+        String prefix = "§c§l[AntiCheat] §7";
+
+        Bukkit.getConsoleSender().sendMessage(prefix + message);
+
+        for (Player online : Bukkit.getOnlinePlayers()) {
+            if (online.hasPermission("anticheat.alert")) {
+                online.sendMessage(prefix + message);
+            }
         }
     }
 
@@ -175,9 +195,7 @@ public class AntiCheatPlugin extends JavaPlugin implements Listener {
             Player p = Bukkit.getPlayer(uuid);
 
             if (p != null) {
-                alert(p.getName() + " auto-timeout for suspected X-Ray " +
-                        "(" + points + "/15)");
-
+                alert(p.getName() + " auto-timeout for suspected X-Ray (" + points + "/15)");
                 timeout(p, 120, "Suspected X-Ray");
             }
 
@@ -185,18 +203,6 @@ public class AntiCheatPlugin extends JavaPlugin implements Listener {
         }
 
         return points;
-    }
-
-    private void alert(String message) {
-        String prefix = "§c§l[AntiCheat] §7";
-
-        Bukkit.getConsoleSender().sendMessage(prefix + message);
-
-        for (Player online : Bukkit.getOnlinePlayers()) {
-            if (online.hasPermission("anticheat.alert")) {
-                online.sendMessage(prefix + message);
-            }
-        }
     }
 
     // ================= COMMANDS =================
